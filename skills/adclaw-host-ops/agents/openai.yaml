@@ -1,0 +1,6 @@
+interface:
+  display_name: "AdClaw Host Ops"
+  short_description: "Inspect AdClaw Host runtime alerts and safe admin actions"
+  default_prompt: "Use $adclaw-host-ops to inspect AdClaw Host operator alerts, sandbox status, customer runtime state, and safe admin actions."
+policy:
+  allow_implicit_invocation: true

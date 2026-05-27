@@ -73,6 +73,11 @@ const CATALOG = {
     command: "adclaw-host-ai-accounting.md",
     description: "Review AdClaw Host AI quotas, hosted keys, limits, and redaction",
   },
+  "adclaw-host-ops": {
+    skill: "adclaw-host-ops",
+    command: "adclaw-host-ops.md",
+    description: "Inspect AdClaw Host operators, runtimes, alerts, and safe admin actions",
+  },
 };
 
 function copyDirSync(src, dest) {

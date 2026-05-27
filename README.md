@@ -56,6 +56,7 @@ npx @citedy/skills list
 | `token-usage` | `/token-usage` | Analyze Claude Code token consumption and estimated costs |
 | `prompt-analyzer` | `/prompt-analyzer` | Analyze prompts for constraint complexity, audit risks, and generate optimized rewrites for Claude/GPT |
 | `adclaw-host-ai-accounting` | `/adclaw-host-ai-accounting` | Review AdClaw Host AI quotas, hosted keys, limits, and redaction |
+| `adclaw-host-ops` | `/adclaw-host-ops` | Inspect AdClaw Host runtimes, operator alerts, and guarded admin actions |
 
 ### Agent Team Skills (Claude Code only)
 
