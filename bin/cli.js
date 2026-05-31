@@ -104,7 +104,8 @@ function findProjectRoot() {
     if (
       fs.existsSync(path.join(dir, "package.json")) ||
       fs.existsSync(path.join(dir, ".git")) ||
-      fs.existsSync(path.join(dir, ".claude"))
+      fs.existsSync(path.join(dir, ".claude")) ||
+      fs.existsSync(path.join(dir, ".codex"))
     ) {
       return dir;
     }
@@ -119,14 +120,17 @@ function printUsage() {
 @citedy/skills — Claude Code skill installer
 
 Usage:
-  npx @citedy/skills install [names...]   Install skills (default: all)
+  npx @citedy/skills install [--target claude|codex|all] [names...]
+                                           Install skills (default: all skills, all targets)
   npx @citedy/skills list                 List available skills
-  npx @citedy/skills update               Re-install all (overwrite)
+  npx @citedy/skills update [--target claude|codex|all] [names...]
+                                           Re-install skills (overwrite)
 
 Examples:
   npx @citedy/skills install              Install all skills + commands
   npx @citedy/skills install youtube      Install YouTube extractor only
   npx @citedy/skills install youtube tiktok
+  npx @citedy/skills update --target codex html-deck
 
 Available skills: ${Object.keys(CATALOG).join(", ")}
 `);
@@ -142,16 +146,55 @@ function listSkills() {
   }
 }
 
-function installSkills(names, overwrite = false) {
+function parseOptions(args) {
+  const names = [];
+  let target = "all";
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    if (arg === "--target") {
+      target = args[i + 1];
+      i += 1;
+      continue;
+    }
+    if (arg.startsWith("--target=")) {
+      target = arg.slice("--target=".length);
+      continue;
+    }
+    names.push(arg);
+  }
+
+  if (!["claude", "codex", "all"].includes(target)) {
+    console.error(`  Invalid target: "${target}". Use claude, codex, or all.`);
+    process.exit(1);
+  }
+
+  return { names: names.length > 0 ? names : Object.keys(CATALOG), target };
+}
+
+function getDestinations(root, target) {
+  const targets = target === "all" ? ["claude", "codex"] : [target];
+  return targets.map((name) => {
+    const namespace = name === "claude" ? ".claude" : ".codex";
+    return {
+      name,
+      skillsDest: path.join(root, namespace, "skills"),
+      commandsDest: path.join(root, namespace, "commands"),
+    };
+  });
+}
+
+function installSkills(names, overwrite = false, target = "all") {
   const root = findProjectRoot();
-  const skillsDest = path.join(root, ".claude", "skills");
-  const commandsDest = path.join(root, ".claude", "commands");
+  const destinations = getDestinations(root, target);
   const anycrawlSkills = new Set(["youtube", "instagram", "tiktok", "social"]);
   const includesAnycrawl = names.some((name) => anycrawlSkills.has(name));
   const includesSymphony = names.includes("symphony");
 
-  fs.mkdirSync(skillsDest, { recursive: true });
-  fs.mkdirSync(commandsDest, { recursive: true });
+  for (const destination of destinations) {
+    fs.mkdirSync(destination.skillsDest, { recursive: true });
+    fs.mkdirSync(destination.commandsDest, { recursive: true });
+  }
 
   let installed = 0;
 
@@ -162,27 +205,37 @@ function installSkills(names, overwrite = false) {
       continue;
     }
 
-    const skillDest = path.join(skillsDest, entry.skill);
-    if (fs.existsSync(skillDest) && !overwrite) {
-      console.log(`  skip  ${entry.skill} (already exists, use 'update' to overwrite)`);
+    const skillExistsEverywhere = destinations.every((destination) =>
+      fs.existsSync(path.join(destination.skillsDest, entry.skill))
+    );
+    if (skillExistsEverywhere && !overwrite) {
+      console.log(`  skip  ${entry.skill} (already exists in ${target}, use 'update' to overwrite)`);
       continue;
     }
 
-    copyDirSync(path.join(SKILLS_SRC, entry.skill), skillDest);
-    console.log(`  skill ${entry.skill}`);
+    for (const destination of destinations) {
+      const skillDest = path.join(destination.skillsDest, entry.skill);
+      if (!fs.existsSync(skillDest) || overwrite) {
+        copyDirSync(path.join(SKILLS_SRC, entry.skill), skillDest);
+        console.log(`  skill ${entry.skill} -> ${destination.name}`);
+      }
 
-    const cmdSrc = path.join(COMMANDS_SRC, entry.command);
-    const cmdDest = path.join(commandsDest, entry.command);
-    if (fs.existsSync(cmdSrc)) {
-      fs.copyFileSync(cmdSrc, cmdDest);
-      console.log(`  cmd   /${entry.command.replace(".md", "")}`);
+      const cmdSrc = path.join(COMMANDS_SRC, entry.command);
+      const cmdDest = path.join(destination.commandsDest, entry.command);
+      if (fs.existsSync(cmdSrc)) {
+        fs.copyFileSync(cmdSrc, cmdDest);
+        console.log(`  cmd   /${entry.command.replace(".md", "")} -> ${destination.name}`);
+      }
     }
 
     installed++;
   }
 
   if (installed > 0) {
-    console.log(`\nInstalled ${installed} skill(s) to ${path.relative(process.cwd(), skillsDest)}`);
+    const targetList = destinations
+      .map((destination) => path.relative(process.cwd(), destination.skillsDest))
+      .join(", ");
+    console.log(`\nInstalled ${installed} skill(s) to ${targetList}`);
     if (includesAnycrawl) {
       console.log("\nNext: add ANYCRAWL_API_KEY_DEV=... to your .env.local");
     }
@@ -193,25 +246,33 @@ function installSkills(names, overwrite = false) {
   }
 }
 
-const [, , command, ...args] = process.argv;
+function main(argv = process.argv.slice(2)) {
+  const [command, ...args] = argv;
 
-switch (command) {
-  case "install": {
-    const names = args.length > 0 ? args : Object.keys(CATALOG);
-    console.log("\nInstalling Citedy skills...\n");
-    installSkills(names);
-    break;
+  switch (command) {
+    case "install": {
+      const { names, target } = parseOptions(args);
+      console.log("\nInstalling Citedy skills...\n");
+      installSkills(names, false, target);
+      break;
+    }
+    case "update": {
+      const { names, target } = parseOptions(args);
+      console.log("\nUpdating Citedy skills...\n");
+      installSkills(names, true, target);
+      break;
+    }
+    case "list":
+      listSkills();
+      break;
+    default:
+      printUsage();
+      break;
   }
-  case "update": {
-    const names = args.length > 0 ? args : Object.keys(CATALOG);
-    console.log("\nUpdating Citedy skills...\n");
-    installSkills(names, true);
-    break;
-  }
-  case "list":
-    listSkills();
-    break;
-  default:
-    printUsage();
-    break;
 }
+
+if (require.main === module) {
+  main();
+}
+
+module.exports = { installSkills, parseOptions, main };

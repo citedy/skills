@@ -11,12 +11,22 @@ Curated collection of AI agent skills by [Citedy](https://www.citedy.com) — wo
 npx @citedy/skills install
 ```
 
-That's it. All skills and slash commands are copied into your project's `.claude/` directory, ready to use.
+That's it. All skills and slash commands are copied into your project's `.claude/` and `.codex/` directories, ready to use.
 
 ### Install specific skills only
 
 ```bash
 npx @citedy/skills install youtube tiktok
+```
+
+### Install for one agent runtime
+
+By default, skills are installed to both Claude Code and Codex directories. To target only one runtime:
+
+```bash
+npx @citedy/skills install --target claude html-deck
+npx @citedy/skills install --target codex html-deck
+npx @citedy/skills install --target all html-deck
 ```
 
 ### Stay up to date

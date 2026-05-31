@@ -1,6 +1,6 @@
 {
   "name": "@citedy/skills",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Curated AI agent skills — works with Claude Code, Codex, Gemini CLI, Droid, and any AI coding agent",
   "license": "MIT",
   "author": "Citedy <hello@citedy.com> (https://www.citedy.com)",
@@ -43,10 +43,14 @@
   "bin": {
     "citedy-skills": "bin/cli.js"
   },
+  "scripts": {
+    "test": "node test/cli-targets.test.js"
+  },
   "files": [
     "bin/",
     "skills/",
     "commands/",
+    "test/",
     "README.md",
     "LICENSE"
   ],
