@@ -78,6 +78,11 @@ const CATALOG = {
     command: "adclaw-host-ops.md",
     description: "Inspect AdClaw Host operators, runtimes, alerts, and safe admin actions",
   },
+  "html-deck": {
+    skill: "html-presentation-deck",
+    command: "html-deck.md",
+    description: "Create browser-native HTML presentation decks",
+  },
 };
 
 function copyDirSync(src, dest) {

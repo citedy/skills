@@ -1,6 +1,6 @@
 {
   "name": "@citedy/skills",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Curated AI agent skills — works with Claude Code, Codex, Gemini CLI, Droid, and any AI coding agent",
   "license": "MIT",
   "author": "Citedy <hello@citedy.com> (https://www.citedy.com)",
@@ -34,6 +34,9 @@
     "cost-estimator",
     "prompt-analyzer",
     "prompt-optimization",
+    "html-deck",
+    "presentation",
+    "slides",
     "constraint-analysis",
     "llm-prompts"
   ],
