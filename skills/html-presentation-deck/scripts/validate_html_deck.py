@@ -108,7 +108,7 @@ def _validate_contrast(context_name: str, variables: dict[str, str]) -> list[str
 
 def main() -> int:
     if len(sys.argv) != 2:
-        print("Usage: python scripts/validate_html_deck.py <deck.html>", file=sys.stderr)
+        print("Usage: python3 scripts/validate_html_deck.py <deck.html>", file=sys.stderr)
         return 2
 
     path = Path(sys.argv[1])

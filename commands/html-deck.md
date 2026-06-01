@@ -2,7 +2,7 @@
 description: Create a browser-native HTML presentation deck
 ---
 Treat `$1` as the presentation brief, topic, or source file path.
-If `$1` is missing, ask the user for the deck topic, audience, target slide count, and preferred visual system.
+If `$1` is missing, ask the user for the deck topic, audience, target slide count, and preferred visual system (Product Grid v2 by default).
 
 Find the installed skill directory before starting:
 
@@ -12,4 +12,11 @@ Find the installed skill directory before starting:
 
 Read `<installed-skill-dir>/SKILL.md` and follow the workflow.
 
-Create a standalone HTML deck at `deck/index.html`, then validate it with `python3 <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html`.
+Create a standalone HTML deck at `deck/index.html`, then validate:
+
+```bash
+python3 <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html
+python3 <installed-skill-dir>/scripts/validate_deck_quality.py deck/index.html
+```
+
+Run `validate_deck_quality.py` only for Product Grid v2 decks (`data-system="product-grid"`).

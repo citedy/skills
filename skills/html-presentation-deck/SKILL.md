@@ -7,6 +7,48 @@ description: "Use this skill when the user wants a browser-native HTML presentat
 
 Create polished, browser-native presentation decks as standalone HTML files. The output is a web presentation, not a PowerPoint file.
 
+## Default Mode: Product Grid v2
+
+Use **Product Grid v2** by default for product, launch, sales, investor, demo,
+operating-model, data, and strategy decks. This is the strict quality path.
+
+Product Grid v2 uses:
+
+- Template: `assets/template-product-grid.html`
+- Layout registry: `references/layout-lock.md`
+- Layout skeletons: `references/layouts-product-grid.md`
+- Component contract: `references/components-product-grid.md`
+- Quality validator: `scripts/validate_deck_quality.py`
+
+The older `template-clean-grid.html` and `template-editorial.html` files remain
+available for legacy decks, but new work should start from Product Grid v2 unless
+the user explicitly asks for the legacy editorial system.
+
+### Product Grid v2 Non-Negotiables
+
+- Every slide must use `data-system="product-grid"`.
+- Every slide must use a registered `data-layout="PGxx"`.
+- Start by writing a slide map: `slide / message / layout / density / image slot / risk`.
+- Do not invent one-off classes in the deck HTML.
+- Do not use inline `font-size`; edit copy or choose another layout.
+- Do not use negative letter spacing, gradients, shadows, decorative blobs, or nested cards.
+- Every local image must include `alt` and `data-image-slot`.
+- SVG may draw geometry only; visible labels must be HTML.
+- If content does not fit, split the slide instead of shrinking text.
+
+### Product Grid v2 Workflow
+
+1. Read `references/layout-lock.md`.
+2. Read `references/components-product-grid.md`.
+3. Read only the required skeletons from `references/layouts-product-grid.md`.
+4. Copy `assets/template-product-grid.html` to `deck/index.html`.
+5. Replace the `<title>` placeholder and `<!-- SLIDES_HERE -->`.
+6. Use the slide map to pick `PG01`-`PG14` layouts before writing HTML.
+7. Run both validators:
+   - `python3 src/adclaw/agents/skills/html-presentation-deck/scripts/validate_html_deck.py deck/index.html`
+   - `python3 src/adclaw/agents/skills/html-presentation-deck/scripts/validate_deck_quality.py deck/index.html`
+8. Open in a browser and check desktop plus mobile for overflow and image legibility.
+
 ## When To Use
 
 Use this skill for:
@@ -80,7 +122,7 @@ References: `references/themes.md`, `references/typography.md`, `references/layo
    - Do not invent many new classes; use the template classes first.
    - If a custom adjustment is unavoidable, prefer a small inline style on the slide section.
 
-6. Choose typography through tokens.
+6. Choose typography through tokens (legacy Editorial / Clean Grid only).
    - Read `references/typography.md` before changing fonts, tracking, or type scale.
    - Use the default system-safe preset unless the user asks for a stronger typographic voice.
    - Keep offline rendering by default; use external fonts only when the user explicitly allows them.
@@ -93,9 +135,8 @@ References: `references/themes.md`, `references/typography.md`, `references/layo
    - Do not crop away important UI text, numbers, or controls.
 
 8. Validate before presenting.
-   - From the repo root, run `python3 <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html`.
-   - For Claude-only installs, `<installed-skill-dir>` is usually `.claude/skills/html-presentation-deck`.
-   - For Codex-only installs, `<installed-skill-dir>` is usually `.codex/skills/html-presentation-deck`.
+   - From the repo root, run `python3 src/adclaw/agents/skills/html-presentation-deck/scripts/validate_html_deck.py deck/index.html`.
+   - When installed via `@citedy/skills`, use `<installed-skill-dir>/scripts/validate_html_deck.py` (usually `.claude/skills/html-presentation-deck` or `.codex/skills/html-presentation-deck`).
    - Open the deck in a browser.
    - Check keyboard navigation, slide index, mobile scaling, broken images, and text overflow.
 
@@ -108,6 +149,12 @@ References: `references/themes.md`, `references/typography.md`, `references/layo
 - Keep source comments in English.
 - Avoid external runtime dependencies when possible; templates must work offline.
 - Do not use bright accent colors for small text on light panels. Use contrast-safe text tokens such as `--accent-text`.
+
+## Slash Command (`/html-deck`)
+
+When invoked as `/html-deck`, treat the argument as the presentation brief. If missing, ask for topic, audience, slide count, and visual system (Product Grid v2 default).
+
+After validation, print the path to `deck/index.html` and how to open it locally.
 
 ## Related Skills
 

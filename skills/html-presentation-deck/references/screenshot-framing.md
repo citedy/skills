@@ -2,6 +2,15 @@
 
 Use screenshot framing when product UI, dashboards, website captures, or code screenshots need to fit the deck's visual system.
 
+## Product Grid v2 Rules
+
+- Use PG04 for one important screenshot and PG09 for evidence grids.
+- Raw product screenshots with important UI labels use `.frame.r-16x10.fit-contain` and `data-image-slot="pg04-main-16x10"`.
+- Generated or reconstructed evidence images must match their slot ratio and should not use `fit-contain`.
+- Do not add fake browser chrome, drop shadows, rounded wrappers, gradient backgrounds, or nested frames.
+- If a screenshot is too tall, split it into multiple slides or crop to the workflow region; do not shrink it until labels are unreadable.
+- If screenshot text is not legible at 1440 x 900, the slide fails.
+
 ## Rules
 
 - Preserve screenshot content when labels, numbers, or UI state matter.
