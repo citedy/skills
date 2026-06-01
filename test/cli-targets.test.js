@@ -118,6 +118,21 @@ function runValidator(script, html) {
     `<!doctype html>
 <html lang="en">
 <head>
+<!-- <style>:root { --paper: #ffffff; --muted: #ffffff; --panel: #ffffff; }</style> -->
+<style>:root { --paper: #ffffff; --muted: #555555; --panel: #eeeeee; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
 <style>
 :root { --paper: #ffffff; --panel: #eeeeee; --muted: #555555; }
 @media (max-width: 760px) { :root { --paper: #000000; --panel: #000000; } }
