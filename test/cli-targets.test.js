@@ -357,6 +357,24 @@ function runValidator(script, html) {
 <html lang="en">
 <head>
 <style>
+:root { --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
+@media (max-width: 760px) { .slide.theme-accent { --accent-on: #165cff; } }
+.slide.theme-accent { --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
 :root { --ink: #000000; --paper: #ffffff; --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
 .slide.theme-dark { --accent: #ffffff; --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); }
 </style>
