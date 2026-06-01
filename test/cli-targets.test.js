@@ -235,6 +235,41 @@ function runValidator(script, html) {
 
 {
   const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --paper: #ffffff; --panel: #eeeeee; --muted: #ffffff; }
+:root { --muted: #555555; }
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-accent { --accent-on: #165cff; --muted: #ffffff; --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /primary text on theme background/);
+}
+
+{
+  const result = runValidator(
     "skills/html-presentation-deck/scripts/validate_deck_quality.py",
     `<!doctype html>
 <html lang="en">
