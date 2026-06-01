@@ -1,4 +1,5 @@
 const assert = require("node:assert/strict");
+const { spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -38,6 +39,15 @@ function assertHtmlDeckCommandSupportsRuntime(root, namespace) {
   assert.doesNotMatch(content, /validate it with `\.claude\/skills\/html-presentation-deck/);
 }
 
+function runValidator(script, html) {
+  const root = makeProject();
+  const deck = path.join(root, "deck.html");
+  fs.writeFileSync(deck, html);
+  return spawnSync("python3", [path.join(__dirname, "..", script), deck], {
+    encoding: "utf8",
+  });
+}
+
 {
   const root = makeProject();
   runInstall(root, "codex");
@@ -71,6 +81,58 @@ function assertHtmlDeckCommandSupportsRuntime(root, namespace) {
     target: "claude",
   });
   assert.equal(parseOptions(["html-deck"]).target, "all");
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: rgb(255,255,255); --muted: rgb(250,250,250); }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+.slide.theme-dark { --panel: rgba(255,255,255,.4); }
+</style>
+</head>
+<body><section class="slide theme-dark"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on slide background/);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_deck_quality.py",
+    `<!doctype html>
+<html lang="en">
+<head><style>.deck{display:flex}.slide{display:block}.stage{display:block}.progress{display:block}.nav{display:block}.index{display:block}</style></head>
+<body>
+<section class="slide" data-system="product-grid" data-layout="PG02">
+  <div class="stage"><img src="" alt="Empty source" data-image-slot="pg02-media-16x10"></div>
+</section>
+</body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /image 1 has blank src/);
 }
 
 console.log("cli target tests passed");
