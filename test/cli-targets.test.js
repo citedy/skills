@@ -104,6 +104,20 @@ function runValidator(script, html) {
     `<!doctype html>
 <html lang="en">
 <head>
+<style>:root { --paper: #ffffff; --panel: rgba(0,0,0,.05); --muted: #555555; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
 <style>:root { --paper: #ffffff; --panel: #eeeeee; --muted: rgba(0,0,0,2); }</style>
 </head>
 <body><section class="slide"></section></body>
