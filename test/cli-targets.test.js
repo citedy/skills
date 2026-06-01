@@ -33,7 +33,8 @@ function assertHtmlDeckCommandSupportsRuntime(root, namespace) {
   const content = fs.readFileSync(command, "utf8");
   assert.match(content, /\.codex\/skills\/html-presentation-deck/);
   assert.match(content, /\.claude\/skills\/html-presentation-deck/);
-  assert.match(content, /python3 <installed-skill-dir>\/scripts\/validate_html_deck\.py/);
+  assert.match(content, /python3 <skill-dir>\/scripts\/validate_html_deck\.py/);
+  assert.match(content, /active_skills\/html-presentation-deck/);
   assert.doesNotMatch(content, /validate it with `\.claude\/skills\/html-presentation-deck/);
 }
 
