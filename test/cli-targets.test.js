@@ -145,6 +145,25 @@ function runValidator(script, html) {
 
 {
   const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-dark" style="--panel: rgba(255,255,255,.4)"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on slide background/);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
     "skills/html-presentation-deck/scripts/validate_deck_quality.py",
     `<!doctype html>
 <html lang="en">
