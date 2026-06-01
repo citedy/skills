@@ -23,7 +23,7 @@ Run this before handing off an HTML presentation deck.
 
 ## Technical
 
-- From the repo root, `python <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html` passes.
+- From the repo root, `python3 <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html` passes.
 - `<installed-skill-dir>` matches the active runtime, usually `.claude/skills/html-presentation-deck` or `.codex/skills/html-presentation-deck`.
 - Browser opens the file with no console-breaking script error.
 - Arrow keys, touch swipe, and Escape index work.

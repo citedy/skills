@@ -12,4 +12,4 @@ Find the installed skill directory before starting:
 
 Read `<installed-skill-dir>/SKILL.md` and follow the workflow.
 
-Create a standalone HTML deck at `deck/index.html`, then validate it with `python <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html`.
+Create a standalone HTML deck at `deck/index.html`, then validate it with `python3 <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html`.
