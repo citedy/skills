@@ -14,6 +14,9 @@ Run this before handing off an HTML presentation deck.
 
 - One visual system is used throughout.
 - One theme is used throughout.
+- Typography changes use `--display-font`, `--text-font`, and `--label-font` tokens instead of class-by-class overrides.
+- External fonts are used only when the user explicitly approved hosted or self-hosted font dependencies.
+- Bright accent colors are not used as small text on light panels.
 - Dense slides are separated by simple statement or image slides.
 - Screenshots are framed consistently.
 - Mobile layout remains readable.
