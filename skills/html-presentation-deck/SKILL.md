@@ -93,7 +93,9 @@ References: `references/themes.md`, `references/typography.md`, `references/layo
    - Do not crop away important UI text, numbers, or controls.
 
 8. Validate before presenting.
-   - From the repo root, run `python .claude/skills/html-presentation-deck/scripts/validate_html_deck.py deck/index.html`.
+   - From the repo root, run `python <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html`.
+   - For Claude-only installs, `<installed-skill-dir>` is usually `.claude/skills/html-presentation-deck`.
+   - For Codex-only installs, `<installed-skill-dir>` is usually `.codex/skills/html-presentation-deck`.
    - Open the deck in a browser.
    - Check keyboard navigation, slide index, mobile scaling, broken images, and text overflow.
 

@@ -28,11 +28,21 @@ function assertInstalled(root, namespace, expected) {
   assert.equal(fs.existsSync(command), expected, `${namespace} command expected ${expected}`);
 }
 
+function assertHtmlDeckCommandSupportsRuntime(root, namespace) {
+  const command = path.join(root, namespace, "commands", "html-deck.md");
+  const content = fs.readFileSync(command, "utf8");
+  assert.match(content, /\.codex\/skills\/html-presentation-deck/);
+  assert.match(content, /\.claude\/skills\/html-presentation-deck/);
+  assert.match(content, /<installed-skill-dir>\/scripts\/validate_html_deck\.py/);
+  assert.doesNotMatch(content, /validate it with `\.claude\/skills\/html-presentation-deck/);
+}
+
 {
   const root = makeProject();
   runInstall(root, "codex");
   assertInstalled(root, ".codex", true);
   assertInstalled(root, ".claude", false);
+  assertHtmlDeckCommandSupportsRuntime(root, ".codex");
 }
 
 {
@@ -40,6 +50,7 @@ function assertInstalled(root, namespace, expected) {
   runInstall(root, "claude");
   assertInstalled(root, ".claude", true);
   assertInstalled(root, ".codex", false);
+  assertHtmlDeckCommandSupportsRuntime(root, ".claude");
 }
 
 {
