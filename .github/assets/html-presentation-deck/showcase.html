@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Presentation Deck Showcase</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #111113; color: #111113; }
+  body { font-family: Aptos, "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .deck { display: grid; gap: 32px; padding: 32px; }
+  .slide {
+    width: 1600px;
+    height: 900px;
+    padding: 74px 88px;
+    position: relative;
+    overflow: hidden;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .slide:target {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+  }
+  h1, h2, p { margin: 0; }
+  .kicker {
+    font: 800 18px/1 "SFMono-Regular", Consolas, monospace;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent-text, var(--accent));
+  }
+  .meta {
+    position: absolute;
+    left: 88px;
+    bottom: 70px;
+    font: 700 18px/1.2 "SFMono-Regular", Consolas, monospace;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lead {
+    margin-top: 34px;
+    max-width: 600px;
+    font-size: 32px;
+    line-height: 1.22;
+    color: var(--muted);
+  }
+  .editorial .headline {
+    margin-top: 44px;
+    max-width: 860px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 118px;
+    line-height: .9;
+    letter-spacing: -.06em;
+    font-weight: 500;
+  }
+  .editorial.dark {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .editorial.dark .lead { color: rgba(255,255,255,.72); }
+  .editorial.dark .meta { color: rgba(255,255,255,.58); }
+  .editorial.split {
+    display: grid;
+    grid-template-columns: 1fr 470px;
+    gap: 88px;
+    align-items: center;
+  }
+  .editorial.split .headline { margin-top: 30px; font-size: 106px; }
+  .editorial .folio {
+    border-top: 2px solid color-mix(in srgb, var(--accent) 44%, transparent);
+    padding-top: 32px;
+  }
+  .editorial .number {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 210px;
+    line-height: .82;
+    letter-spacing: -.07em;
+    color: var(--accent-text, var(--accent));
+  }
+  .editorial .soft-panel {
+    height: 570px;
+    border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 58%, transparent), transparent 56%),
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.04));
+  }
+  .grid .chrome {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    font: 800 17px/1 "SFMono-Regular", Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--muted);
+  }
+  .grid .rule { height: 2px; margin-top: 42px; background: var(--line); }
+  .grid .display {
+    margin-top: 72px;
+    max-width: 860px;
+    font-size: 128px;
+    line-height: .86;
+    letter-spacing: -.075em;
+    font-weight: 820;
+  }
+  .grid .lead { max-width: 660px; }
+  .grid .marker {
+    position: absolute;
+    right: 88px;
+    bottom: 70px;
+    width: 260px;
+    height: 260px;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: var(--accent-on);
+    font: 850 64px/.9 "SFMono-Regular", Consolas, monospace;
+  }
+  .grid.panelled .display { max-width: 760px; }
+  .grid.panelled .panel {
+    position: absolute;
+    right: 88px;
+    top: 216px;
+    width: 470px;
+    height: 500px;
+    padding: 34px;
+    border: 2px solid var(--line);
+    background: var(--panel);
+  }
+  .grid.panelled .metric {
+    margin-top: 80px;
+    font-size: 138px;
+    line-height: .8;
+    letter-spacing: -.07em;
+    font-weight: 840;
+    color: var(--accent-text, var(--accent));
+  }
+  .grid.dark {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .grid.dark .chrome, .grid.dark .lead { color: rgba(255,255,255,.68); }
+</style>
+</head>
+<body>
+<main class="deck">
+  <section id="editorial-ink-paper" class="slide editorial dark" style="--paper:#f4efe7;--ink:#111113;--muted:#6f675d;--accent:#9d4f35;--accent-soft:#e7cabb;">
+    <div class="kicker">Editorial / Founder Update</div>
+    <h1 class="headline">The market is moving faster than our planning cycle.</h1>
+    <p class="lead">A browser-native strategy deck with large opening statements, warm contrast, and a keynote rhythm.</p>
+    <div class="meta">Ink Paper / 2026</div>
+  </section>
+
+  <section id="editorial-indigo-porcelain" class="slide editorial split" style="--paper:#edf1f4;--ink:#101827;--muted:#5b6675;--accent:#2d5f8b;--accent-soft:#cad8ea;">
+    <div>
+      <div class="kicker">Editorial / Research Brief</div>
+      <h1 class="headline">Evidence should feel calm before it becomes decisive.</h1>
+      <p class="lead">A refined research cover for technical narratives, data stories, and executive readouts.</p>
+    </div>
+    <div class="folio">
+      <div class="number">06</div>
+      <p class="lead">Signals, methods, proof, next move.</p>
+    </div>
+    <div class="meta">Indigo Porcelain</div>
+  </section>
+
+  <section id="editorial-forest-ledger" class="slide editorial split" style="--paper:#eef0e7;--ink:#142016;--muted:#5f6a5a;--accent:#3f6b48;--accent-soft:#cddcc8;">
+    <div>
+      <div class="kicker">Editorial / Operating Model</div>
+      <h1 class="headline">Sustainable growth needs a slower, stronger system.</h1>
+      <p class="lead">A grounded title slide for long-horizon plans, community programs, and operations strategy.</p>
+    </div>
+    <div class="soft-panel" aria-hidden="true"></div>
+    <div class="meta">Forest Ledger</div>
+  </section>
+
+  <section id="clean-grid-blue-anchor" class="slide grid" style="--paper:#fbfbf8;--ink:#080808;--muted:#6d6d68;--line:#d9d9d2;--panel:#f0f0eb;--accent:#0647ff;--accent-text:#0647ff;--accent-on:#ffffff;">
+    <div class="chrome"><span>Operating Review</span><span>Q3 / 2026</span></div>
+    <div class="rule"></div>
+    <h1 class="display">Growth needs a tighter feedback loop.</h1>
+    <p class="lead">A precise cover system for board decks, product plans, roadmaps, and executive decisions.</p>
+    <div class="marker">01</div>
+  </section>
+
+  <section id="clean-grid-lemon-signal" class="slide grid panelled" style="--paper:#fbfbf4;--ink:#0a0a08;--muted:#6e6e60;--line:#ddddc8;--panel:#f1f1df;--accent:#e5ef2f;--accent-text:#505700;--accent-on:#111111;">
+    <div class="chrome"><span>Launch System</span><span>Signal Stack</span></div>
+    <div class="rule"></div>
+    <h1 class="display">Make every launch measurable by day two.</h1>
+    <p class="lead">High-contrast product storytelling without drifting into decorative slideware.</p>
+    <aside class="panel">
+      <div class="kicker">Decision Window</div>
+      <div class="metric">14d</div>
+      <p class="lead">From proof capture to channel readout.</p>
+    </aside>
+  </section>
+
+  <section id="clean-grid-orange-marker" class="slide grid dark" style="--paper:#fbf8f2;--ink:#120f0b;--muted:#6d6258;--line:#dfd6ca;--panel:#f1e8dc;--accent:#f46a23;--accent-text:#9f3d0f;--accent-on:#120f0b;">
+    <div class="chrome"><span>Incident Review</span><span>Decision Memo</span></div>
+    <div class="rule"></div>
+    <h1 class="display">The fastest fix is the one everyone can read.</h1>
+    <p class="lead">A sharp cover for urgent decisions, transformation plans, retrospectives, and operational resets.</p>
+    <div class="marker">72h</div>
+  </section>
+</main>
+</body>
+</html>

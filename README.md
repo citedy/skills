@@ -65,7 +65,7 @@ npx @citedy/skills list
 | `symphony` | `/codex-symphony` | Bootstrap local OpenAI Symphony + Linear orchestration for any repo |
 | `token-usage` | `/token-usage` | Analyze Claude Code token consumption and estimated costs |
 | `prompt-analyzer` | `/prompt-analyzer` | Analyze prompts for constraint complexity, audit risks, and generate optimized rewrites for Claude/GPT |
-| `html-deck` | `/html-deck` | Create browser-native HTML presentation decks with Editorial and Clean Grid systems |
+| [`html-deck`](skills/html-presentation-deck/README.md) | `/html-deck` | Create browser-native HTML presentation decks with Editorial and Clean Grid systems |
 | `adclaw-host-ai-accounting` | `/adclaw-host-ai-accounting` | Review AdClaw Host AI quotas, hosted keys, limits, and redaction |
 | `adclaw-host-ops` | `/adclaw-host-ops` | Inspect AdClaw Host runtimes, operator alerts, and guarded admin actions |
 
@@ -79,6 +79,16 @@ npx @citedy/skills list
 > Agent Team skills require Claude Code with Agent Teams support (TeamCreate, TaskCreate, SendMessage).
 
 Extraction skills use the [AnyCrawl](https://anycrawl.dev) Scrape API for LLM-powered structured data extraction.
+
+## HTML Deck Showcase
+
+Create polished, browser-native presentation decks that open locally or can be hosted as standalone web pages.
+
+| Editorial | Clean Grid |
+|-----------|------------|
+| ![Editorial title slide example](.github/assets/html-presentation-deck/editorial-ink-paper.png) | ![Clean Grid title slide example](.github/assets/html-presentation-deck/clean-grid-blue-anchor.png) |
+
+See the full gallery and usage notes in [`skills/html-presentation-deck/README.md`](skills/html-presentation-deck/README.md).
 
 ## Setup
 
