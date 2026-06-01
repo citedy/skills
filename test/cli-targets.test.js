@@ -120,6 +120,31 @@ function runValidator(script, html) {
 
 {
   const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+@media (prefers-color-scheme: dark) { :root { --muted: #ffffff; --panel: #ffffff; } }
+:root {
+  --paper: #ffffff;
+  --muted: #555555;
+  --asset: url("image{1}.png");
+  /* { ignored } */
+  @media (min-width: 1px) { --muted: #ffffff; --panel: #ffffff; }
+  --accent-text: #111111;
+  --panel: #eeeeee;
+}
+</style>
+</head>
+<body><section class="slide" style="--panel: 'decorative'; --muted: #222222"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
     "skills/html-presentation-deck/scripts/validate_deck_quality.py",
     `<!doctype html>
 <html lang="en">
