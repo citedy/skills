@@ -119,6 +119,25 @@ function runValidator(script, html) {
 <html lang="en">
 <head>
 <style>
+:root { --paper: #ffffff; --panel: #eeeeee; --muted: #555555; }
+@media (max-width: 760px) { :root { --muted: #ffffff; } }
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /conditional :root/);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
 :root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
 .slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
 .slide.theme-dark { --panel: rgba(255,255,255,.4); }
@@ -157,7 +176,7 @@ function runValidator(script, html) {
 <html lang="en">
 <head>
 <style>
-@media (prefers-color-scheme: dark) { :root { --muted: #ffffff; --panel: #ffffff; } }
+@media (prefers-color-scheme: dark) { :root { --muted: #555555; --panel: #eeeeee; } }
 :root {
   --paper: #ffffff;
   --muted: #555555;
