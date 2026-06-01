@@ -183,9 +183,9 @@ function runValidator(script, html) {
 <html lang="en">
 <head>
 <style>
-:root { --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
-.slide.theme-accent { --muted: #ffffff; --panel: rgba(255,255,255,.08); }
-@media (max-width: 760px) { .slide.theme-accent { --accent: #000000; } }
+:root { --accent: #ffffff; --accent-on: #333333; --accent-text: #333333; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-accent { --muted: #555555; --panel: rgba(0,0,0,.05); }
+@media (max-width: 760px) { .slide.theme-accent { --accent: #000000; --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); } }
 @media (max-width: 760px) { .slide.theme-accent { --accent-on: #333333; } }
 </style>
 </head>
@@ -195,6 +195,25 @@ function runValidator(script, html) {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /conditional slide theme/);
   assert.match(result.stderr, /primary text on theme background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --accent: #ffffff; --accent-on: #333333; --accent-text: #333333; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-accent { --muted: #555555; --panel: rgba(0,0,0,.05); }
+@media (max-width: 760px) { .slide.theme-accent { --accent: #000000; --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); } }
+@media (min-width: 1200px) { .slide.theme-accent { --accent-on: #333333; } }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
 }
 
 {
