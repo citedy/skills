@@ -1,43 +1,24 @@
 # HTML Presentation Deck
 
-Create polished, browser-native presentation decks as standalone HTML files. Use it when a deck should open locally, be hosted as a web page, or present product screenshots with clean keyboard and swipe navigation.
+Create polished, browser-native presentation decks as standalone HTML files with strong cover systems, clean typography, and presentation-ready visual rhythm.
 
-## Two installs, two locations
+## Design Systems
 
-This skill ships in **AdClaw** (built-in) and **`@citedy/skills`** (npm). They are separate copies with different on-disk paths.
+Use the skill for executive decks, product launches, operating reviews, research briefs, founder updates, and decision memos.
 
-| Install | Where the skill lives |
-|---------|------------------------|
-| **AdClaw runtime** | `~/.adclaw/active_skills/html-presentation-deck` (or `$ADCLAW_WORKING_DIR/active_skills/...`) |
-| **AdClaw repo dev** | `src/adclaw/agents/skills/html-presentation-deck/` (source; synced to `active_skills`) |
-| **`npx @citedy/skills`** | `<your-project>/.codex/skills/html-presentation-deck` and/or `.claude/skills/html-presentation-deck` |
+![HTML Presentation Deck cover systems collage](assets/showcase/html-deck-cover-systems-collage.png)
 
-Default mode is **Product Grid v2** in both packages. Legacy **Editorial** and **Clean Grid** remain available.
+## Editorial Covers
 
-## AdClaw
+| Editorial / Ink Paper | Editorial / Indigo Porcelain | Editorial / Forest Ledger |
+| --- | --- | --- |
+| ![Editorial Ink Paper cover system](assets/showcase/editorial-ink-paper.png) | ![Editorial Indigo Porcelain cover system](assets/showcase/editorial-indigo-porcelain.png) | ![Editorial Forest Ledger cover system](assets/showcase/editorial-forest-ledger.png) |
 
-Built into the agent; no npm step. Custom edits can go in `~/.adclaw/customized_skills/html-presentation-deck/`.
+## Clean Grid Covers
 
-## Claude / Codex (`@citedy/skills`)
-
-```bash
-npx @citedy/skills install html-deck
-npx @citedy/skills install --target claude html-deck
-npx @citedy/skills install --target codex html-deck
-```
-
-```text
-/html-deck Build a 10-slide investor update for a B2B SaaS launch.
-```
-
-Creates `deck/index.html` under the **project where you ran install**, then validate from that project root:
-
-```bash
-python3 .codex/skills/html-presentation-deck/scripts/validate_html_deck.py deck/index.html
-python3 .codex/skills/html-presentation-deck/scripts/validate_deck_quality.py deck/index.html
-```
-
-Use `.claude/skills/...` instead when you installed with `--target claude`.
+| Clean Grid / Blue Anchor | Clean Grid / Lemon Signal | Clean Grid / Orange Marker |
+| --- | --- | --- |
+| ![Clean Grid Blue Anchor cover system](assets/showcase/clean-grid-blue-anchor.png) | ![Clean Grid Lemon Signal cover system](assets/showcase/clean-grid-lemon-signal.png) | ![Clean Grid Orange Marker cover system](assets/showcase/clean-grid-orange-marker.png) |
 
 ## Visual Systems
 
