@@ -1,61 +1,37 @@
 # HTML Presentation Deck
 
-Create polished, browser-native presentation decks as standalone HTML files. Use it when a deck should open locally, be hosted as a web page, or present product screenshots with clean keyboard and swipe navigation.
+We just shipped `html-deck` for `@citedy/skills`.
 
-## Two installs, two locations
+Create polished, browser-native presentation decks from a prompt: editorial covers, clean grid systems, screenshot framing, keyboard navigation, and built-in HTML validation.
 
-This skill ships in **AdClaw** (built-in) and **`@citedy/skills`** (npm). They are separate copies with different on-disk paths.
+Give your coding agent a repo, docs folder, screenshots, or product brief, and it turns the context into a polished browser-native presentation deck.
 
-| Install | Where the skill lives |
-|---------|------------------------|
-| **AdClaw runtime** | `~/.adclaw/active_skills/html-presentation-deck` (or `$ADCLAW_WORKING_DIR/active_skills/...`) |
-| **AdClaw repo dev** | `src/adclaw/agents/skills/html-presentation-deck/` (source; synced to `active_skills`) |
-| **`npx @citedy/skills`** | `<your-project>/.codex/skills/html-presentation-deck` and/or `.claude/skills/html-presentation-deck` |
-
-Default mode is **Product Grid v2** in both packages. Legacy **Editorial** and **Clean Grid** remain available.
-
-## AdClaw
-
-Built into the agent; no npm step. Custom edits can go in `~/.adclaw/customized_skills/html-presentation-deck/`.
-
-## Claude / Codex (`@citedy/skills`)
+## Install
 
 ```bash
 npx @citedy/skills install html-deck
-npx @citedy/skills install --target claude html-deck
-npx @citedy/skills install --target codex html-deck
 ```
 
 ```text
 /html-deck Build a 10-slide investor update for a B2B SaaS launch.
 ```
 
-Creates `deck/index.html` under the **project where you ran install**, then validate from that project root:
+## Style Examples
 
-```bash
-python3 .codex/skills/html-presentation-deck/scripts/validate_html_deck.py deck/index.html
-python3 .codex/skills/html-presentation-deck/scripts/validate_deck_quality.py deck/index.html
-```
+![HTML Presentation Deck cover systems collage](assets/showcase/html-deck-cover-systems-collage.png)
 
-Use `.claude/skills/...` instead when you installed with `--target claude`.
+| Editorial / Ink Paper | Editorial / Indigo Porcelain | Editorial / Forest Ledger |
+| --- | --- | --- |
+| ![Editorial Ink Paper cover system](assets/showcase/editorial-ink-paper.png) | ![Editorial Indigo Porcelain cover system](assets/showcase/editorial-indigo-porcelain.png) | ![Editorial Forest Ledger cover system](assets/showcase/editorial-forest-ledger.png) |
 
-## Visual Systems
+| Clean Grid / Blue Anchor | Clean Grid / Lemon Signal | Clean Grid / Orange Marker |
+| --- | --- | --- |
+| ![Clean Grid Blue Anchor cover system](assets/showcase/clean-grid-blue-anchor.png) | ![Clean Grid Lemon Signal cover system](assets/showcase/clean-grid-lemon-signal.png) | ![Clean Grid Orange Marker cover system](assets/showcase/clean-grid-orange-marker.png) |
 
-- **Product Grid v2** (default) — product, launch, investor, and strategy decks.
-- **Editorial** — founder updates, research stories, narrative strategy.
-- **Clean Grid** — board updates, roadmaps, metrics, operating reviews.
+## What It Includes
 
-## What You Get
-
-- Offline-friendly HTML with keyboard and swipe navigation.
-- Product Grid v2 with registered layouts `PG01`–`PG14`.
-- Legacy Editorial and Clean Grid templates with typography presets.
-- Contrast and placeholder validation before handoff.
-
-## Files
-
-- `SKILL.md` — agent workflow.
-- `assets/template-product-grid.html` — default template.
-- `assets/template-editorial.html`, `assets/template-clean-grid.html` — legacy.
-- `references/` — layouts, themes, typography, screenshot framing.
-- `scripts/validate_html_deck.py`, `scripts/validate_deck_quality.py` — validators.
+- Product Grid v2 for product launches, investor updates, and strategy decks.
+- Editorial cover systems for founder updates, research stories, and narrative presentations.
+- Clean Grid systems for board decks, roadmaps, metrics, and operating reviews.
+- Screenshot framing rules for product UI, dashboards, and evidence slides.
+- Built-in validators for deck structure, image slots, contrast, and common layout mistakes.
