@@ -104,6 +104,21 @@ function runValidator(script, html) {
     `<!doctype html>
 <html lang="en">
 <head>
+<style>:root { --ink: #ffffff; --paper: #ffffff; --muted: #555555; --panel: #eeeeee; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /primary text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
 <style>:root { --paper: #ffffff; --panel: rgba(0,0,0,.05); --muted: #555555; }</style>
 </head>
 <body><section class="slide"></section></body>
@@ -568,6 +583,24 @@ function runValidator(script, html) {
 </html>`,
   );
   assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="theme-dark slide"><div style="--panel:#f7f7f1"></div></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on panel/);
 }
 
 {
