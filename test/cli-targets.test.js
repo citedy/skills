@@ -1,4 +1,5 @@
 const assert = require("node:assert/strict");
+const { spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -33,8 +34,18 @@ function assertHtmlDeckCommandSupportsRuntime(root, namespace) {
   const content = fs.readFileSync(command, "utf8");
   assert.match(content, /\.codex\/skills\/html-presentation-deck/);
   assert.match(content, /\.claude\/skills\/html-presentation-deck/);
-  assert.match(content, /python3 <installed-skill-dir>\/scripts\/validate_html_deck\.py/);
+  assert.match(content, /python3 <skill-dir>\/scripts\/validate_html_deck\.py/);
+  assert.match(content, /active_skills\/html-presentation-deck/);
   assert.doesNotMatch(content, /validate it with `\.claude\/skills\/html-presentation-deck/);
+}
+
+function runValidator(script, html) {
+  const root = makeProject();
+  const deck = path.join(root, "deck.html");
+  fs.writeFileSync(deck, html);
+  return spawnSync("python3", [path.join(__dirname, "..", script), deck], {
+    encoding: "utf8",
+  });
 }
 
 {
@@ -70,6 +81,578 @@ function assertHtmlDeckCommandSupportsRuntime(root, namespace) {
     target: "claude",
   });
   assert.equal(parseOptions(["html-deck"]).target, "all");
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: rgb(255,255,255); --muted: rgb(250,250,250); }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #111111; --paper: #ffffff; --muted: #555555; --panel: #eeeeee; }
+:root .component { --muted: #ffffff; }
+</style>
+</head>
+<body><section class="slide"><div class="component"></div></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --ink: #ffffff; --paper: #ffffff; --muted: #555555; --panel: #eeeeee; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /primary text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: #ffffff; --panel: rgba(0,0,0,.05); --muted: #555555; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<!-- <style>:root { --paper: #ffffff; --muted: #ffffff; --panel: #ffffff; }</style> -->
+<style>:root { --paper: #ffffff; --muted: #555555; --panel: #eeeeee; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --paper: #ffffff; --panel: #eeeeee; --muted: #555555; }
+@media (max-width: 760px) { :root { --paper: #000000; --panel: #000000; } }
+@media (max-width: 760px) { :root { --muted: #333333; } }
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /conditional :root/);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: #ffffff; --panel: #eeeeee; --panel-2: #555555; --muted: #555555; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on panel-2/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: #ffffff; --panel: #eeeeee; --muted: rgba(0,0,0,2); }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --accent: #ffffff; --accent-on: #333333; --accent-text: #333333; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-accent { --muted: #555555; --panel: rgba(0,0,0,.05); }
+@media (max-width: 760px) { .slide.theme-accent { --accent: #000000; --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); } }
+@media (max-width: 760px) { .slide.theme-accent { --accent-on: #333333; } }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /conditional slide theme/);
+  assert.match(result.stderr, /primary text on theme background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-dark { --muted: #dddddd; --panel: #222222; }
+.slide.theme-dark .panel { --muted: #000000; --panel: #ffffff; }
+</style>
+</head>
+<body><section class="slide theme-dark"><div class="panel"></div></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --accent: #ffffff; --accent-on: #333333; --accent-text: #333333; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-accent { --muted: #555555; --panel: rgba(0,0,0,.05); }
+@media (max-width: 760px) { .slide.theme-accent { --accent: #000000; --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); } }
+@media (min-width: 1200px) { .slide.theme-accent { --accent-on: #333333; } }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --paper: #ffffff; --panel: #eeeeee; --muted: #555555; }
+@media (max-width: 760px) { :root { --muted: #ffffff; } }
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /conditional :root/);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+@media (max-width: 760px) { :root { --muted: #ffffff; } }
+:root { --paper: #ffffff; --panel: #eeeeee; --muted: #555555; }
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+.slide.theme-dark { --panel: rgba(255,255,255,.4); }
+</style>
+</head>
+<body><section class="slide theme-dark"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on slide background/);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-dark"><div style="--panel:#f7f7f1"></div></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+@media (prefers-color-scheme: dark) { :root { --muted: #555555; --panel: #eeeeee; } }
+:root {
+  --paper: #ffffff;
+  --muted: #555555;
+  --asset: url("image{1}.png");
+  /* { ignored } */
+  @media (min-width: 1px) { --muted: #ffffff; --panel: #ffffff; }
+  --accent-text: #111111;
+  --panel: #eeeeee;
+}
+</style>
+</head>
+<body><section class="slide" style="--panel: 'decorative'; --muted: #222222"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-dark" style="--panel: rgba(255,255,255,.4)"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on slide background/);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: #ffffff; --muted: #555555; --panel: #eeeeee; }</style>
+</head>
+<body>
+<pre>:root { --paper: #000000; --muted: #000000; }</pre>
+<section class="slide"></section>
+</body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root {
+  --paper: #ffffff;
+  --muted-base: #777777;
+  --muted: var(--muted-base);
+  --panel-base: #eeeeee;
+  --panel: var(--panel-base);
+}
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on paper/);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: #ffffff; --muted: rgba(0,0,0,20%); }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>:root { --paper: #ffffff; --muted: rgba(0,0,0,1.2.3); }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+  assert.doesNotMatch(result.stderr, /Traceback/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --paper: #ffffff; --panel: #eeeeee; --muted: #ffffff; }
+:root { --muted: #555555; }
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-accent { --accent-on: #165cff; --muted: #ffffff; --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /primary text on theme background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
+@media (max-width: 760px) { .slide.theme-accent { --accent-on: #165cff; } }
+.slide.theme-accent { --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-accent"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --accent: #165cff; --accent-on: #ffffff; --muted: #555555; --panel: #eeeeee; }
+.slide.theme-dark { --accent: #ffffff; --accent-on: #ffffff; --muted: #ffffff; --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="slide theme-dark"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /text on accent background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --yellow: #fff200; --accent: #165cff; --accent-on: #ffffff; --muted: #777777; --panel: #ffffff; }
+.slide.theme-dark, .slide.theme-yellow { --muted: #000000; --panel: #000000; }
+</style>
+</head>
+<body><section class="slide theme-dark"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /theme-dark/);
+  assert.match(result.stderr, /muted text on slide background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --accent: #165cff; --accent-on: #ffffff; --muted: #777777; --panel: #ffffff; }
+.theme-dark.slide { --muted: #000000; --panel: #000000; }
+</style>
+</head>
+<body><section class="slide theme-dark"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /theme-dark/);
+  assert.match(result.stderr, /muted text on slide background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>html, :root { --paper: #ffffff; --muted: #ffffff; --panel: #eeeeee; }</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on paper/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --accent: #165cff; --accent-on: #ffffff; --muted: #777777; --panel: #ffffff; }
+.slide.theme-dark { --muted: #dddddd; --panel: #222222; }
+@media (max-width: 760px) { :root { --ink: #ffffff; } }
+</style>
+</head>
+<body><section class="slide theme-dark"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /conditional :root theme/);
+  assert.match(result.stderr, /primary text on theme background/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root {
+  @media (min-width: 1px) { .note::before { content: "--muted: #ffffff;"; } }
+  --paper: #ffffff;
+  --muted: #555555;
+  --panel: #eeeeee;
+}
+</style>
+</head>
+<body><section class="slide"></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 0);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_html_deck.py",
+    `<!doctype html>
+<html lang="en">
+<head>
+<style>
+:root { --ink: #000000; --paper: #ffffff; --muted: #111111; --panel: #ffffff; }
+.slide.theme-dark { --muted: rgba(255,255,255,.2); --panel: rgba(255,255,255,.08); }
+</style>
+</head>
+<body><section class="theme-dark slide"><div style="--panel:#f7f7f1"></div></section></body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /muted text on panel/);
+}
+
+{
+  const result = runValidator(
+    "skills/html-presentation-deck/scripts/validate_deck_quality.py",
+    `<!doctype html>
+<html lang="en">
+<head><style>.deck{display:flex}.slide{display:block}.stage{display:block}.progress{display:block}.nav{display:block}.index{display:block}</style></head>
+<body>
+<section class="slide" data-system="product-grid" data-layout="PG02">
+  <div class="stage"><img src="" alt="Empty source" data-image-slot="pg02-media-16x10"></div>
+</section>
+</body>
+</html>`,
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /image 1 has blank src/);
 }
 
 console.log("cli target tests passed");

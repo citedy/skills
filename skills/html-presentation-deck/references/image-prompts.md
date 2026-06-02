@@ -10,6 +10,35 @@ Use these prompts when the deck needs generated images. Keep prompts short and t
 - If text must appear inside an image, keep it in the same language as the deck.
 - Prefer real-world visual evidence over decorative filler.
 
+## Product Grid Slot Rules
+
+Product Grid v2 images must be generated for the target slot before insertion:
+
+- `pg01-hero-16x9`: product launch visual, realistic product context, no UI labels unless they are meant to be inspected.
+- `pg04-main-16x10`: raw product screenshot or screenshot reconstruction; preserve all important UI text.
+- `pg09-evidence-16x9`: evidence visual, market proof, workflow diagram, or before/after graphic.
+
+Do not generate atmospheric filler. If the slide needs proof, use a real screenshot
+or a diagram with clear information hierarchy.
+
+## Product Grid Launch Visual
+
+```text
+16:9 product launch visual for [product]. Clean SaaS presentation style, real product context, strict rectangular composition, generous whitespace, one accent color, no gradients, no glassmorphism, no rounded cards, no slide title, no footer, no watermark.
+```
+
+## Product Grid Screenshot Reconstruction
+
+```text
+16:10 product UI screenshot reconstruction for [workflow]. Keep labels short and readable, align to a strict grid, use realistic SaaS controls, one accent color, no browser chrome, no decorative background, no watermark.
+```
+
+## Product Grid Evidence Diagram
+
+```text
+16:9 evidence diagram for [claim]. Three to five rectangular modules, left-aligned labels, thin rules, one accent color, high contrast, no gradient, no shadow, no rounded shapes, no footer, no logo.
+```
+
 ## Editorial Photo
 
 ```text

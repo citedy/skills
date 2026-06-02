@@ -2,6 +2,18 @@
 
 Run this before handing off an HTML presentation deck.
 
+## Product Grid v2 Gate
+
+- Every slide has `data-system="product-grid"` and registered `data-layout="PGxx"`.
+- The slide map exists before HTML: slide, message, layout, density, image slot, risk.
+- No custom one-off classes appear in deck HTML.
+- No inline `font-size` overrides appear in slides.
+- No negative letter spacing, gradients, shadows, decorative blobs, or nested cards appear.
+- Every local image has `alt` and `data-image-slot`.
+- Required image slots are present for screenshot layouts.
+- Dense slides are followed by PG02 Statement or PG10 Quote.
+- `python3 <skill-dir>/scripts/validate_deck_quality.py deck/index.html` passes.
+
 ## Content
 
 - One idea per slide.
@@ -10,21 +22,23 @@ Run this before handing off an HTML presentation deck.
 - Data claims include source context in speaker notes or nearby captions.
 - No visible draft notes, private instructions, or placeholder copy.
 
+## Legacy Typography (Editorial / Clean Grid)
+
+- Typography tokens follow `references/typography.md`.
+- Contrast-safe `--accent-text` is used for small labels on light panels.
+- `validate_html_deck.py` passes contrast checks for theme tokens.
+
 ## Design
 
 - One visual system is used throughout.
 - One theme is used throughout.
-- Typography changes use `--display-font`, `--text-font`, and `--label-font` tokens instead of class-by-class overrides.
-- External fonts are used only when the user explicitly approved hosted or self-hosted font dependencies.
-- Bright accent colors are not used as small text on light panels.
 - Dense slides are separated by simple statement or image slides.
 - Screenshots are framed consistently.
 - Mobile layout remains readable.
 
 ## Technical
 
-- From the repo root, `python3 <installed-skill-dir>/scripts/validate_html_deck.py deck/index.html` passes.
-- `<installed-skill-dir>` matches the active runtime, usually `.claude/skills/html-presentation-deck` or `.codex/skills/html-presentation-deck`.
+- From the project root, `python3 <skill-dir>/scripts/validate_html_deck.py deck/index.html` passes.
 - Browser opens the file with no console-breaking script error.
 - Arrow keys, touch swipe, and Escape index work.
 - Local images load from `images/`.
